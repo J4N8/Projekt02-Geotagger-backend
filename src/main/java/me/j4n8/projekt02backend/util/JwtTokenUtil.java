@@ -34,6 +34,11 @@ public class JwtTokenUtil {
         return createToken(claims, userDetails.getUsername());
     }
 
+    public String generateToken(String email) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, email);
+    }
+
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }

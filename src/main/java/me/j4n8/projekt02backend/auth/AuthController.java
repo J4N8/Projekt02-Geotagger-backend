@@ -1,17 +1,13 @@
 package me.j4n8.projekt02backend.auth;
 
 import me.j4n8.projekt02backend.user.User;
-import me.j4n8.projekt02backend.user.UserLoginDto;
 import me.j4n8.projekt02backend.user.UserService;
 import me.j4n8.projekt02backend.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,8 +33,14 @@ public class AuthController {
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
     }
 
-//    @GetMapping("/register")
-//    public String register() {
-//
-//    }
+    @GetMapping("/register")
+    public ResponseEntity<?> register(@RequestBody UserRegisterDto userRegisterDto) {
+        User user = userService.registerUser(userRegisterDto.getEmail(), userRegisterDto.getPassword(), userRegisterDto.getUsername());
+
+        String token = jwtTokenUtil.generateToken(userRegisterDto.getEmail());
+
+        JwtAuthenticationResponse response = new JwtAuthenticationResponse(token);
+
+        return ResponseEntity.ok(response);
+    }
 }
