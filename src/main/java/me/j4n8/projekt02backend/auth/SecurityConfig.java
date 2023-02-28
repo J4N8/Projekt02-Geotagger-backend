@@ -33,7 +33,8 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests()
                 .requestMatchers("/login").permitAll() // Allow access to login page without authentication
-                .anyRequest().authenticated() // All other requests need authentication
+                .anyRequest().permitAll()
+//                .anyRequest().authenticated() // All other requests need authentication
                 .and()
                 .formLogin()
                 .loginPage("/login")
