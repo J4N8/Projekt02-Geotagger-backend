@@ -10,19 +10,19 @@ import javax.sql.DataSource;
 @Configuration
 public class DatabaseConfig {
 
-    @Value("${database.url}")
+    @Value("${spring.datasource.url}")
     private String url;
 
-    @Value("${database.port}")
+    @Value("${spring.datasource.port}")
     private int port;
 
-    @Value("${database.database}")
+    @Value("${spring.datasource.database}")
     private String database;
 
-    @Value("${database.username}")
+    @Value("${spring.datasource.username}")
     private String username;
 
-    @Value("${database.password}")
+    @Value("${spring.datasource.password}")
     private String password;
 
     @Bean
