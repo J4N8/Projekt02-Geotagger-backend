@@ -1,0 +1,9 @@
+GET http://localhost:8080/location
+Accept: application/json
+
+###
+GET http://localhost:8080/location/random
+Accept: application/json
+
+###
+
