@@ -1,9 +1,6 @@
 package me.j4n8.projekt02backend.img_location;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.sql.Date;
 
@@ -13,17 +10,24 @@ public class ImgLocation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date created_at;
     
     private String imageName;
     
-    private String latitude;
-    private String longitude;
+    private double latitude;
+    private double longitude;
     
     public ImgLocation() {
     }
     
-    public ImgLocation(Long id, Date createdAt, String imageName, String latitude, String longitude) {
+    public ImgLocation(CreateImgLocationDto createImgLocationDto) {
+        this.imageName = createImgLocationDto.getImageName();
+        this.longitude = createImgLocationDto.getLongitude();
+        this.latitude = createImgLocationDto.getLatitude();
+    }
+    
+    public ImgLocation(Long id, Date createdAt, String imageName, double latitude, double longitude) {
         this.id = id;
         this.created_at = createdAt;
         this.imageName = imageName;
@@ -47,19 +51,19 @@ public class ImgLocation {
         this.imageName = imageName;
     }
     
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
     
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
     
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
     
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
     
