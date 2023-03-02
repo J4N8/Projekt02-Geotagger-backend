@@ -40,9 +40,8 @@ public class UserService {
         return user;
     }
     
-    public User registerUser(String email, String password, String username) {
-        User newUser = new User(email, passwordEncoder.encode(password), username);
-        
+    public User registerUser(String email, String password, String username, String token) {
+        User newUser = new User(email, passwordEncoder.encode(password), username, token);
         return userRepository.save(newUser);
     }
     

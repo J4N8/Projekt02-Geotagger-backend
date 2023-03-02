@@ -25,15 +25,22 @@ public class User {
         this.password = password;
         this.username = username;
     }
-
+    
+    public User(String email, String password, String username, String token) {
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.jwtToken = token;
+    }
+    
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
-
+    
     public String getEmail() {
         return email;
     }
