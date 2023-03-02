@@ -1,5 +1,6 @@
 package me.j4n8.projekt02backend.auth;
 
+import jakarta.servlet.http.HttpServletRequest;
 import me.j4n8.projekt02backend.user.User;
 import me.j4n8.projekt02backend.user.UserDto;
 import me.j4n8.projekt02backend.user.UserService;
@@ -44,14 +45,25 @@ public class AuthController {
         String token = jwtTokenUtil.generateToken(userRegisterDto.getEmail());
 
         JwtAuthenticationResponse response = new JwtAuthenticationResponse(token);
-
+    
         return ResponseEntity.ok(response);
     }
-
+    
     @GetMapping("/me")
     public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
         UserDto userDto = new UserDto(principal.getId(), principal.getUsername(), principal.getEmail());
         return ResponseEntity.ok(userDto);
+    }
+    
+    @PostMapping
+    public ResponseEntity<?> logout(HttpServletRequest request, Authentication authentication) {
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        User currentUser = (User) authentication.getPrincipal();
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+        return userService.invalidateToken(currentUser, token);
     }
 }
