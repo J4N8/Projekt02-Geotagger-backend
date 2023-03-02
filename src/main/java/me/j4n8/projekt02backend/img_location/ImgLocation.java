@@ -1,6 +1,7 @@
 package me.j4n8.projekt02backend.img_location;
 
 import jakarta.persistence.*;
+import me.j4n8.projekt02backend.user.User;
 
 import java.sql.Date;
 
@@ -18,6 +19,24 @@ public class ImgLocation {
     private double latitude;
     private double longitude;
     
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+    
+    public ImgLocation(String imageName, double latitude, double longitude, User user) {
+        this.imageName = imageName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.user = user;
+    }
+    
+    public ImgLocation(CreateImgLocationDto createImgLocationDto, User user) {
+        this.imageName = createImgLocationDto.getImageName();
+        this.longitude = createImgLocationDto.getLongitude();
+        this.latitude = createImgLocationDto.getLatitude();
+        this.user = user;
+    }
+    
     public ImgLocation() {
     }
     
@@ -33,6 +52,14 @@ public class ImgLocation {
         this.imageName = imageName;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+    
+    public User getUser() {
+        return user;
+    }
+    
+    public void setUser(User user) {
+        this.user = user;
     }
     
     public Long getId() {
