@@ -20,7 +20,7 @@ public class ImgLocation {
     private double longitude;
     
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, table = "img_location")
     private User user;
     
     public ImgLocation(String imageName, double latitude, double longitude, User user) {
