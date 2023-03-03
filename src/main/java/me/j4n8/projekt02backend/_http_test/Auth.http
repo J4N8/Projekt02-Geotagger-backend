@@ -7,7 +7,6 @@ Content-Type: application/json
   "username": "TesterUsername"
 }
 
-
 ###
 
 POST http://localhost:8080/auth/login
@@ -20,5 +19,16 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:8080/auth/logout
+Content-Type: application/json
+
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0ZXJVc2VybmFtZSIsImlhdCI6MTY3Nzc1NjI1OSwiZXhwIjoxNjc3NzU3MTU5fQ.nfM40-3WBBaevZZInhCKtnGz_JjfesrpogFuqrXnOHU"
+}
+
+###
+
 GET http://localhost:8080/auth/me
 Accept: application/json
+
+###

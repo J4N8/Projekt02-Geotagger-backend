@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,36 +37,39 @@ public class AuthController {
         userRepository.save(user);
         
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         JwtAuthenticationResponse response = new JwtAuthenticationResponse(token);
         return ResponseEntity.ok().headers(headers).body(response);
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegisterDto userRegisterDto) {
-        String token = jwtTokenUtil.generateToken(userRegisterDto.getEmail());
-        User user = userService.registerUser(userRegisterDto.getEmail(), userRegisterDto.getPassword(), userRegisterDto.getUsername(), token);
-    
-        JwtAuthenticationResponse response = new JwtAuthenticationResponse(token);
-    
+        User user = userService.registerUser(userRegisterDto.getEmail(), userRegisterDto.getPassword(), userRegisterDto.getUsername());
+        JwtAuthenticationResponse response = new JwtAuthenticationResponse(user.getJwtToken());
         return ResponseEntity.ok(response);
     }
     
     @GetMapping("/me")
-    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
-        User principal = (User) authentication.getPrincipal();
-        UserDto userDto = new UserDto(principal.getId(), principal.getUsername(), principal.getEmail());
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<UserDto> getCurrentUser(HttpServletRequest request) {
+        try {
+            User user = userService.getUserFromRequest(request);
+            UserDto userDto = new UserDto(user);
+            return ResponseEntity.ok(userDto);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
     
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, Authentication authentication) {
-        String authHeader = request.getHeader("Authorization");
-        String token = null;
-        User currentUser = (User) authentication.getPrincipal();
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        try {
+            User user = userService.getUserFromRequest(request);
+            ResponseEntity<String> response = userService.invalidateToken(user, user.getJwtToken());
+            response.getHeaders().set(HttpHeaders.AUTHORIZATION, null);
+            return response;
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return userService.invalidateToken(currentUser, token);
+        
     }
 }
