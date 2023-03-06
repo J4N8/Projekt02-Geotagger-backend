@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import me.j4n8.projekt02backend.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -62,11 +61,7 @@ public class UserService {
 	
 	public User getUserFromRequest(HttpServletRequest request) {
 		try {
-			String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-			String token = null;
-			if (authHeader != null && authHeader.startsWith("Bearer ")) {
-				token = authHeader.substring(7);
-			}
+			String token = jwtTokenUtil.getTokenFromRequest(request);
 			String username = jwtTokenUtil.getUsernameFromToken(token);
 			User currentUser = findByUsername(username);
 			return currentUser;
