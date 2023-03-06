@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 public class Projekt02BackendApplication {
-
-    private static final Logger log = LoggerFactory.getLogger(Projekt02BackendApplication.class);
-
-    public static void main(String[] args) {
-        SpringApplication.run(Projekt02BackendApplication.class, args);
-    }
+	
+	private static final Logger log = LoggerFactory.getLogger(Projekt02BackendApplication.class);
+	
+	public static void main(String[] args) {
+		SpringApplication.run(Projekt02BackendApplication.class, args);
+	}
 }

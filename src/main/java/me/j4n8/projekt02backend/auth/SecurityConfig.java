@@ -19,51 +19,51 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        JwtTokenFilter jwtTokenFilter = new JwtTokenFilter(jwtTokenUtil, userDetailsService());
-        return http
-                .authorizeHttpRequests()
-                .requestMatchers("/login").permitAll() // Allow access to login page without authentication
-                .anyRequest().permitAll()
+	@Autowired
+	private DataSource dataSource;
+	
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		JwtTokenFilter jwtTokenFilter = new JwtTokenFilter(jwtTokenUtil, userDetailsService());
+		return http
+				.authorizeHttpRequests()
+				.requestMatchers("/login").permitAll() // Allow access to login page without authentication
+				.anyRequest().permitAll()
 //                .anyRequest().authenticated() // All other requests need authentication
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/dashboard")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll()
-                .and()
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf()
-                .disable() // disable CSRF protection for simplicity in this example
-                .build();
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery("SELECT username, password, enabled FROM users WHERE username=?")
-                .authoritiesByUsernameQuery("SELECT username, authority FROM authorities WHERE username=?")
-                .passwordEncoder(passwordEncoder);
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
-        userDetailsManager.setDataSource(dataSource);
-        return userDetailsManager;
-    }
+				.and()
+				.formLogin()
+				.loginPage("/login")
+				.defaultSuccessUrl("/dashboard")
+				.permitAll()
+				.and()
+				.logout()
+				.permitAll()
+				.and()
+				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+				.csrf()
+				.disable() // disable CSRF protection for simplicity in this example
+				.build();
+	}
+	
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		auth.jdbcAuthentication()
+				.dataSource(dataSource)
+				.usersByUsernameQuery("SELECT username, password, enabled FROM users WHERE username=?")
+				.authoritiesByUsernameQuery("SELECT username, authority FROM authorities WHERE username=?")
+				.passwordEncoder(passwordEncoder);
+	}
+	
+	@Bean
+	public UserDetailsService userDetailsService() {
+		JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
+		userDetailsManager.setDataSource(dataSource);
+		return userDetailsManager;
+	}
 }
 
