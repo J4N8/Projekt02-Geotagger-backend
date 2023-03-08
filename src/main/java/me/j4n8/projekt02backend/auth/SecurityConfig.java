@@ -5,7 +5,6 @@ import me.j4n8.projekt02backend.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,13 +31,17 @@ public class SecurityConfig {
 		JwtTokenFilter jwtTokenFilter = new JwtTokenFilter(jwtTokenUtil, userDetailsService());
 		return http
 				.authorizeHttpRequests()
-				.requestMatchers("/login").permitAll() // Allow access to login page without authentication
-				.anyRequest().permitAll()
-//                .anyRequest().authenticated() // All other requests need authentication
+				// Allow access to login and register page without authentication
+				.requestMatchers("/auth/login").permitAll()
+				.requestMatchers("/login").permitAll()
+				.requestMatchers("/register").permitAll()
+				.requestMatchers("/auth/register").permitAll()
+//				.anyRequest().permitAll()
+				.anyRequest().authenticated() // All other requests need authentication
 				.and()
 				.formLogin()
 				.loginPage("/login")
-				.defaultSuccessUrl("/dashboard")
+				.defaultSuccessUrl("/home")
 				.permitAll()
 				.and()
 				.logout()
@@ -50,19 +53,11 @@ public class SecurityConfig {
 				.build();
 	}
 	
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication()
-				.dataSource(dataSource)
-				.usersByUsernameQuery("SELECT username, password, enabled FROM users WHERE username=?")
-				.authoritiesByUsernameQuery("SELECT username, authority FROM authorities WHERE username=?")
-				.passwordEncoder(passwordEncoder);
-	}
-	
 	@Bean
 	public UserDetailsService userDetailsService() {
 		JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
 		userDetailsManager.setDataSource(dataSource);
+		userDetailsManager.setUsersByUsernameQuery("select username,password,'true' as enabled from users where username = ?");
 		return userDetailsManager;
 	}
 }

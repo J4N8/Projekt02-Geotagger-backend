@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,9 @@ public class UserService {
     private JwtTokenUtil jwtTokenUtil;
     
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+	    User user = userRepository.findByUsername(username)
+			    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	    return user;
     }
     
     public User findByEmail(String email) {

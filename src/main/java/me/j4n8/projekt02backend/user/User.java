@@ -1,10 +1,14 @@
 package me.j4n8.projekt02backend.user;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -71,5 +75,32 @@ public class User {
 	
 	public void setJwtToken(String jwtToken) {
 		this.jwtToken = jwtToken;
+	}
+	
+	//UserDetails stuff
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+	
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// Implement this method to return the user's authorities (roles/permissions)
+		return null;
 	}
 }

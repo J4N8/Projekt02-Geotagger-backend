@@ -10,7 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +26,8 @@ public class AuthController {
 	private UserService userService;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserDetailsService userDetailsService;
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody UserRegisterDto userRegisterDto) {
@@ -47,6 +53,11 @@ public class AuthController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 		JwtAuthenticationResponse response = new JwtAuthenticationResponse(token);
+		
+		UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
 		return ResponseEntity.ok().headers(headers).body(response);
 	}
 	
@@ -56,6 +67,7 @@ public class AuthController {
 			User user = userService.getUserFromRequest(request);
 			ResponseEntity<String> response = userService.invalidateToken(user, user.getJwtToken());
 			response.getHeaders().set(HttpHeaders.AUTHORIZATION, null);
+			SecurityContextHolder.getContext().setAuthentication(null);
 			return response;
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
