@@ -36,8 +36,8 @@ public class SecurityConfig {
 				.requestMatchers("/login").permitAll()
 				.requestMatchers("/register").permitAll()
 				.requestMatchers("/auth/register").permitAll()
-//				.anyRequest().permitAll()
-				.anyRequest().authenticated() // All other requests need authentication
+				.anyRequest().permitAll()
+//				.anyRequest().authenticated() // All other requests need authentication
 				.and()
 				.formLogin()
 				.loginPage("/login")
