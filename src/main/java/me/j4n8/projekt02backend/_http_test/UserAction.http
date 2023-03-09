@@ -76,6 +76,36 @@ Content-Type: application/json
   "user": {
     "id": "1"
   },
+  "newValue": "asdf",
+  "url": "/testurl/something",
+  "action": "SCROLL",
+  "componentType": null
+}
+
+###
+
+POST http://localhost:8080/user-action/new
+Content-Type: application/json
+
+{
+  "user": {
+    "id": "1"
+  },
+  "newValue": null,
+  "url": "/testurl/something",
+  "action": "SCROLL",
+  "componentType": "BUTTON"
+}
+
+###
+
+POST http://localhost:8080/user-action/new
+Content-Type: application/json
+
+{
+  "user": {
+    "id": "1"
+  },
   "newValue": "new test value",
   "url": "/testurl/something",
   "action": "CLICK",

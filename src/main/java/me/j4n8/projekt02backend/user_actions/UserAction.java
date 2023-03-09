@@ -3,17 +3,16 @@ package me.j4n8.projekt02backend.user_actions;
 import jakarta.persistence.*;
 import me.j4n8.projekt02backend.user.User;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(indexes = @Index(columnList = "date"), name = "user_action")
+@Table(indexes = @Index(columnList = "date_time"), name = "user_action")
 public class UserAction {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(columnDefinition = "DATE DEFAULT CURRENT_DATE")
-	private Date date;
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, name = "date_time")
+	private LocalDateTime dateTime;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -33,7 +32,6 @@ public class UserAction {
 		this.url = url;
 		this.action = action;
 		this.componentType = componentType;
-		this.date = null;
 	}
 	@Enumerated(EnumType.STRING)
 	@Column(name = "component_type")
@@ -48,11 +46,10 @@ public class UserAction {
 		this.url = userActionDto.getUrl();
 		this.action = userActionDto.getAction();
 		this.componentType = userActionDto.getComponentType();
-		this.date = null;
 	}
 	
 	@PrePersist
 	public void prePersist() {
-		date = Date.valueOf(LocalDate.now());
+		dateTime = LocalDateTime.now();
 	}
 }

@@ -18,7 +18,11 @@ public class UserActionDto {
 		this.newValue = newValue;
 		this.url = url;
 		this.action = UserActionEnum.valueOf(action);
-		this.componentType = ComponentTypes.valueOf(componentType);
+		if (componentType == null) {
+			this.componentType = null;
+		} else {
+			this.componentType = ComponentTypes.valueOf(componentType);
+		}
 	}
 	
 	public User getUser() {

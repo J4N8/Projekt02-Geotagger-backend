@@ -16,6 +16,6 @@ public class UserActionService {
 	}
 	
 	public List<UserAction> getLast100Logs() {
-		return userActionRepository.findTop100ByOrderByDateDesc();
+		return userActionRepository.findTop100ByOrderByDateTimeDesc();
 	}
 }
