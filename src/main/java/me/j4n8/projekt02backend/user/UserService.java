@@ -72,4 +72,9 @@ public class UserService {
 			return null;
 		}
 	}
+	
+	public User changePassword(User user, String newPassword) {
+		user.setPassword(passwordEncoder.encode(newPassword));
+		return userRepository.save(user);
+	}
 }

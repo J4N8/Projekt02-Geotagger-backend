@@ -1,6 +1,8 @@
 package me.j4n8.projekt02backend.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
+import me.j4n8.projekt02backend.auth.password_reset.PasswordResetToken;
+import me.j4n8.projekt02backend.auth.password_reset.PasswordResetTokenService;
 import me.j4n8.projekt02backend.user.User;
 import me.j4n8.projekt02backend.user.UserDto;
 import me.j4n8.projekt02backend.user.UserRepository;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -107,6 +111,47 @@ public class AuthController {
 			return ResponseEntity.ok(userDto);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
+		}
+	}
+	
+	@Autowired
+	private JavaMailSender javaMailSender;
+	
+	@Autowired
+	private PasswordResetTokenService passwordResetTokenService;
+	
+	@PostMapping("/forgot-password")
+	public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
+		User user = userService.findByEmail(email);
+		if (user == null) {
+			return ResponseEntity.badRequest().body("No user with that email.");
+		}
+		PasswordResetToken passwordResetToken = passwordResetTokenService.createPasswordResetToken(user);
+		
+		String resetPasswordLink = "http://localhost:8080/reset-password?token=" + passwordResetToken.getToken();
+		
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(user.getEmail());
+		message.setSubject("Password Reset Request");
+		message.setText("To reset your password, click the link below:\n\n" + resetPasswordLink);
+		javaMailSender.send(message);
+		
+		return ResponseEntity.ok().body("Password reset email sent successfully.");
+	}
+	
+	@PostMapping("/forgot-password")
+	public ResponseEntity<?> changePassword(@RequestParam("token") String token, @RequestParam("new_password") String newPassword) {
+		PasswordResetToken resetToken = passwordResetTokenService.findByToken(token);
+		if (resetToken == null) {
+			return ResponseEntity.badRequest().body("Invalid token.");
+		}
+		try {
+			User user = resetToken.getUser();
+			passwordResetTokenService.deletePasswordResetToken(resetToken);
+			userService.changePassword(user, newPassword);
+			return ResponseEntity.ok().body("Password changed.");
+		} catch (Exception e) {
+			return ResponseEntity.internalServerError().body("Something went wrong while changing password.");
 		}
 	}
 }
