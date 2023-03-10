@@ -1,6 +1,7 @@
 package me.j4n8.projekt02backend.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
+import me.j4n8.projekt02backend.auth.password_reset.PasswordResetDto;
 import me.j4n8.projekt02backend.auth.password_reset.PasswordResetToken;
 import me.j4n8.projekt02backend.auth.password_reset.PasswordResetTokenService;
 import me.j4n8.projekt02backend.user.User;
@@ -121,12 +122,15 @@ public class AuthController {
 	private PasswordResetTokenService passwordResetTokenService;
 	
 	@PostMapping("/forgot-password")
-	public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
-		User user = userService.findByEmail(email);
+	public ResponseEntity<?> forgotPassword(@RequestBody PasswordResetDto passwordResetDto) {
+		User user = userService.findByEmail(passwordResetDto.getEmail());
 		if (user == null) {
 			return ResponseEntity.badRequest().body("No user with that email.");
 		}
 		PasswordResetToken passwordResetToken = passwordResetTokenService.createPasswordResetToken(user);
+		
+		//FOR TESTING
+//		return ResponseEntity.ok().body(passwordResetToken.getToken());
 		
 		String resetPasswordLink = "http://localhost:8080/reset-password?token=" + passwordResetToken.getToken();
 		
@@ -139,16 +143,16 @@ public class AuthController {
 		return ResponseEntity.ok().body("Password reset email sent successfully.");
 	}
 	
-	@PostMapping("/forgot-password")
-	public ResponseEntity<?> changePassword(@RequestParam("token") String token, @RequestParam("new_password") String newPassword) {
-		PasswordResetToken resetToken = passwordResetTokenService.findByToken(token);
+	@PostMapping("/reset-password")
+	public ResponseEntity<?> changePassword(@RequestBody PasswordResetDto passwordResetDto) {
+		PasswordResetToken resetToken = passwordResetTokenService.findByToken(passwordResetDto.getToken());
 		if (resetToken == null) {
 			return ResponseEntity.badRequest().body("Invalid token.");
 		}
 		try {
 			User user = resetToken.getUser();
 			passwordResetTokenService.deletePasswordResetToken(resetToken);
-			userService.changePassword(user, newPassword);
+			userService.changePassword(user, passwordResetDto.getNewPassword());
 			return ResponseEntity.ok().body("Password changed.");
 		} catch (Exception e) {
 			return ResponseEntity.internalServerError().body("Something went wrong while changing password.");
