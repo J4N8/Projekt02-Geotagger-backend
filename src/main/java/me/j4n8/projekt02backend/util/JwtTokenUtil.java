@@ -78,7 +78,7 @@ public class JwtTokenUtil {
 				.compact();
 	}
 	
-	public String getTokenFromRequest(HttpServletRequest request) {
+	public String getTokenFromRequestHeader(HttpServletRequest request) {
 		String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 		String token = null;
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {

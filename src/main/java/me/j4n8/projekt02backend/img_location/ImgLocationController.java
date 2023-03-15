@@ -1,6 +1,5 @@
 package me.j4n8.projekt02backend.img_location;
 
-import me.j4n8.projekt02backend.auth.GuessDto;
 import me.j4n8.projekt02backend.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

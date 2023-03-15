@@ -14,21 +14,22 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "username": "TesterUsername",
   "password": "p@ssw0rd"
 }
-
-###
-# @no-redirect
-POST http://localhost:8080/auth/logout
-Content-Type: application/json
-
-{}
 
 ###
 
 # @no-redirect
 GET http://localhost:8080/auth/me
 Accept: application/json
+
+###
+
+# @no-redirect
+POST http://localhost:8080/auth/logout
+Content-Type: application/json
+
+{}
 
 ###

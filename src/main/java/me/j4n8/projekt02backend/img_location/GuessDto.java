@@ -1,4 +1,4 @@
-package me.j4n8.projekt02backend.auth;
+package me.j4n8.projekt02backend.img_location;
 
 public class GuessDto {
 	private long id;
