@@ -76,31 +76,4 @@ public class User {//implements UserDetails {
 	public void setJwtToken(String jwtToken) {
 		this.jwtToken = jwtToken;
 	}
-	
-	//UserDetails stuff
-//	@Override
-//	public boolean isAccountNonExpired() {
-//		return true;
-//	}
-//
-//	@Override
-//	public boolean isAccountNonLocked() {
-//		return true;
-//	}
-//
-//	@Override
-//	public boolean isCredentialsNonExpired() {
-//		return true;
-//	}
-//
-//	@Override
-//	public boolean isEnabled() {
-//		return true;
-//	}
-//
-//	@Override
-//	public Collection<? extends GrantedAuthority> getAuthorities() {
-//		// Implement this method to return the user's authorities (roles/permissions)
-//		return null;
-//	}
 }

@@ -5,8 +5,6 @@ import org.springframework.lang.NonNull;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	User findByEmail(@NonNull String email);
-	
 	User findByUsername(@NonNull String username);
-	
 	boolean existsByUsername(@NonNull String username);
 }

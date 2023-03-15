@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,17 +27,6 @@ public class UserService {
     
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
-    }
-    
-    public User authenticateUser(String email, String password) {
-	    User user = userRepository.findByEmail(email);
-	    if (user == null) {
-		    return null;
-	    }
-	    if (!BCrypt.checkpw(password, user.getPassword())) {
-		    return null;
-	    }
-	    return user;
     }
 	
 	public User registerUser(String email, String password, String username) {
