@@ -1,7 +1,6 @@
 package me.j4n8.projekt02backend.auth;
 
 import me.j4n8.projekt02backend.util.JwtRequestFilter;
-import me.j4n8.projekt02backend.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,16 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.sql.DataSource;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-	@Autowired
-	private DataSource dataSource;
-	
-	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired

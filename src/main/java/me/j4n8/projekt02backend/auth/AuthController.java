@@ -43,9 +43,10 @@ public class AuthController {
 	private UserDetailsService userDetailsService;
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	//PASSWORD RESET EMAIL
 	@Autowired
 	private JavaMailSender javaMailSender;
+	@Autowired
+	private PasswordResetTokenService passwordResetTokenService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody UserLoginDto authenticationRequest) {
@@ -114,7 +115,6 @@ public class AuthController {
 		if (user == null) {
 			return ResponseEntity.badRequest().build();
 		}
-		UserDto userDto = new UserDto(user);
 		
 		//Validate token
 		String oldToken = jwtTokenUtil.getTokenFromRequestHeader(request);
@@ -130,7 +130,7 @@ public class AuthController {
 	}
 	
 	@GetMapping("/me")
-	public ResponseEntity<UserDto> getCurrentUser(HttpServletRequest request) {
+	public ResponseEntity<UserDto> getCurrentUser() {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			String username = authentication.getName();
@@ -141,9 +141,6 @@ public class AuthController {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
-	@Autowired
-	private PasswordResetTokenService passwordResetTokenService;
 	
 	@PostMapping("/forgot-password")
 	public ResponseEntity<?> forgotPassword(@RequestBody PasswordResetDto passwordResetDto) {
