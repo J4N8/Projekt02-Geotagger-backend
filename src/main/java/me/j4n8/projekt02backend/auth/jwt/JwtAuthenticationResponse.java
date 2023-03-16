@@ -1,4 +1,4 @@
-package me.j4n8.projekt02backend.auth;
+package me.j4n8.projekt02backend.auth.jwt;
 
 public class JwtAuthenticationResponse {
 	private String jwtToken;

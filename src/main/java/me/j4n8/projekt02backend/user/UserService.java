@@ -1,7 +1,7 @@
 package me.j4n8.projekt02backend.user;
 
 import jakarta.servlet.http.HttpServletRequest;
-import me.j4n8.projekt02backend.util.JwtTokenUtil;
+import me.j4n8.projekt02backend.auth.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;

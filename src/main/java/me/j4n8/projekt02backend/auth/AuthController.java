@@ -2,6 +2,8 @@ package me.j4n8.projekt02backend.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
+import me.j4n8.projekt02backend.auth.jwt.JwtAuthenticationResponse;
+import me.j4n8.projekt02backend.auth.jwt.JwtTokenUtil;
 import me.j4n8.projekt02backend.auth.password_reset.PasswordResetDto;
 import me.j4n8.projekt02backend.auth.password_reset.PasswordResetToken;
 import me.j4n8.projekt02backend.auth.password_reset.PasswordResetTokenService;
@@ -9,7 +11,6 @@ import me.j4n8.projekt02backend.user.User;
 import me.j4n8.projekt02backend.user.UserDto;
 import me.j4n8.projekt02backend.user.UserRepository;
 import me.j4n8.projekt02backend.user.UserService;
-import me.j4n8.projekt02backend.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

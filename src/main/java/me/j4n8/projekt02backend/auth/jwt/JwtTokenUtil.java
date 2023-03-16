@@ -1,4 +1,4 @@
-package me.j4n8.projekt02backend.util;
+package me.j4n8.projekt02backend.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package me.j4n8.projekt02backend.auth;
+package me.j4n8.projekt02backend.auth.jwt;
 
 import me.j4n8.projekt02backend.user.User;
 import me.j4n8.projekt02backend.user.UserRepository;

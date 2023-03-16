@@ -1,6 +1,7 @@
-package me.j4n8.projekt02backend.auth;
+package me.j4n8.projekt02backend;
 
-import me.j4n8.projekt02backend.util.JwtRequestFilter;
+import me.j4n8.projekt02backend.auth.jwt.JwtAuthenticationEntryPoint;
+import me.j4n8.projekt02backend.auth.jwt.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
