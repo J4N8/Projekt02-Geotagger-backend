@@ -52,10 +52,12 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody UserLoginDto authenticationRequest) {
 		try {
+			// Authenticate user with username and password from request body and set the authentication in the security context
 			authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 			final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 			final String token = jwtTokenUtil.generateToken(userDetails);
 			
+			// Set token in auth header and cookies
 			return setAuthHeaderAndCookies(token);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("Invalid credentials " + e.getMessage());
@@ -64,9 +66,11 @@ public class AuthController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody UserRegisterDto userRegisterDto) {
+		// Check if user with that email already exists
 		if (userService.usernameExists(userRegisterDto.getUsername())) {
 			return ResponseEntity.unprocessableEntity().body("User with that username already exists");
 		}
+		// Create new user in database and return it
 		User user = userService.registerUser(userRegisterDto.getEmail(), userRegisterDto.getPassword(), userRegisterDto.getUsername());
 		return ResponseEntity.ok(user);
 	}
@@ -85,6 +89,7 @@ public class AuthController {
 	public ResponseEntity<String> logout(HttpServletRequest request) {
 		try {
 			User user = userService.getUserFromRequest(request);
+			// Invalidate token and remove it from the database and from the security context
 			ResponseEntity<String> response = userService.invalidateToken(user, user.getJwtToken());
 			response.getHeaders().set(HttpHeaders.AUTHORIZATION, null);
 			SecurityContextHolder.getContext().setAuthentication(null);
@@ -95,7 +100,7 @@ public class AuthController {
 	}
 	
 	private ResponseEntity<?> setAuthHeaderAndCookies(String token) {
-		//Set tokens in header
+		// Set token in auth header and cookies
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 		ResponseCookie jwtCookie = ResponseCookie.from("jwtToken", token)
@@ -117,12 +122,12 @@ public class AuthController {
 			return ResponseEntity.badRequest().build();
 		}
 		
-		//Validate token
+		// Check if token is valid
 		String oldToken = jwtTokenUtil.getTokenFromRequestHeader(request);
 		if (!jwtTokenUtil.validateToken(oldToken, (UserDetails) user)) {
 			return ResponseEntity.badRequest().build();
 		}
-		//Generate new token
+		// Generate new token and set it in the database and in the security context
 		String token = jwtTokenUtil.generateToken(user.getUsername());
 		user.setJwtToken(token);
 		userRepository.save(user);
@@ -133,6 +138,7 @@ public class AuthController {
 	@GetMapping("/me")
 	public ResponseEntity<UserDto> getCurrentUser() {
 		try {
+			// Get current user from the security context
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			String username = authentication.getName();
 			User user = userService.findByUsername(username);
@@ -149,13 +155,11 @@ public class AuthController {
 		if (user == null) {
 			return ResponseEntity.badRequest().body("No user with that email.");
 		}
+		// Create password reset token
 		PasswordResetToken passwordResetToken = passwordResetTokenService.createPasswordResetToken(user);
 		
-		//FOR TESTING
-//		return ResponseEntity.ok().body(passwordResetToken.getToken());
-		
+		// Send email with reset link
 		String resetPasswordLink = "http://localhost:8080/reset-password?token=" + passwordResetToken.getToken();
-		
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(user.getEmail());
 		message.setSubject("Password Reset Request");
@@ -167,11 +171,13 @@ public class AuthController {
 	
 	@PostMapping("/reset-password")
 	public ResponseEntity<?> changePassword(@RequestBody PasswordResetDto passwordResetDto) {
+		// Check if token is valid
 		PasswordResetToken resetToken = passwordResetTokenService.findByToken(passwordResetDto.getToken());
 		if (resetToken == null) {
 			return ResponseEntity.badRequest().body("Invalid token.");
 		}
 		try {
+			// Change password and delete reset token from the database
 			User user = resetToken.getUser();
 			passwordResetTokenService.deletePasswordResetToken(resetToken);
 			userService.changePassword(user, passwordResetDto.getNewPassword());

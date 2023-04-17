@@ -26,6 +26,7 @@ public class ImgLocationService {
 	
 	public ImgLocation getRandomLocation() {
 		List<ImgLocation> entities = imgLocationRepository.findAll();
+		// If there are no locations in the database, throw an exception
 		if (entities.isEmpty()) {
 			throw new IllegalStateException("There are no locations in the database.");
 		}
@@ -43,6 +44,7 @@ public class ImgLocationService {
 	}
 	
 	public String uploadImage(MultipartFile file) {
+		// Normalize file name and generate unique name
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		String keyName = UUID.randomUUID() + "-" + fileName;
 		try {

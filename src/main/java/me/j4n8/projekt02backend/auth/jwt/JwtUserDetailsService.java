@@ -15,6 +15,12 @@ public class JwtUserDetailsService implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	/***
+	 * Loads the user details for the given username
+	 * @param username The username
+	 * @return The user details
+	 * @throws UsernameNotFoundException If the user was not found
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username);

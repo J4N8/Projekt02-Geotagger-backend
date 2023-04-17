@@ -30,6 +30,7 @@ public class UserService {
     }
 	
 	public User registerUser(String email, String password, String username) {
+		// Generate token and save user to database
 		String token = jwtTokenUtil.generateToken(email);
 		User newUser = new User(email, passwordEncoder.encode(password), username, token);
 		return userRepository.save(newUser);
